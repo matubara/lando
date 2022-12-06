@@ -5,8 +5,8 @@ name=$1
  pushd ./${name}/webroot
  pwd
  cp  ../../../archives/20221203_200039* ./
- 
- sed -i "s/\'wp_\'/\'bz_\'/g" ./wp-config.php
+ cp  ../../../archives/wordpress/.htaccess ./ 
+ sed -i s/\'wp_\'/\'bz_\'/g ./wp-config.php
 #read -p "Press [Enter] key to move on to the next."
 
  lando wp db import ./20221203_200039_MYSQL_DATABASE.sql
