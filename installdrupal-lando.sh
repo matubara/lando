@@ -6,8 +6,8 @@ name=$1
  pwd
 
 #デバッグ環境の設定
-cp -rf ./.lando_conf/drupal9/settings.local.php ./web/sites/default/
-cp -rf ./.lando_conf/drupal9/development.services.yml ./web/sites/
+cp -f ./.lando_conf/drupal9/settings.local.php ./web/sites/default/
+cp -f ./.lando_conf/drupal9/development.services.yml ./web/sites/
 
 #echo "" >> ./web/sites/default/settings.php
 #echo "if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {" >> ./web/sites/default/settings.php
@@ -43,8 +43,8 @@ lando composer install
 
 #read -p "Press [Enter] key to move on to the next."
 cp ./web/core/assets/scaffold/files/htaccess ./web/.htaccess
-cp -rf ./web/core/assets/scaffold/files/default.services.yml ./web/sites/default/
-cp -rf ./web/core/assets/scaffold/files/default.settings.php ./web/sites/default/
+cp -f ./web/core/assets/scaffold/files/default.services.yml ./web/sites/default/
+cp -f ./web/core/assets/scaffold/files/default.settings.php ./web/sites/default/
 
 #read -p "Press [Enter] key to move on to the next."
 cp -rf ./bak/web/ ./
