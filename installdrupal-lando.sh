@@ -5,7 +5,17 @@ name=$1
  pushd ./${name}
  pwd
 
+#デバッグ環境の設定
+cp -rf ./.lando_conf/drupal9/settings.local.php ./web/sites/default/
+cp -rf ./.lando_conf/drupal9/development.services.yml ./web/sites/
 
+#echo "" >> ./web/sites/default/settings.php
+#echo "if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {" >> ./web/sites/default/settings.php
+#echo "  include $app_root . '/' . $site_path . '/settings.local.php';" >> ./web/sites/default/settings.php
+#echo "}" >> ./web/sites/default/settings.php
+
+
+#バックアップファイルをプロジェクトルートに展開する
 echo "copy source code from archive folder"
 cp ../../archives/02AUG2022NEWDEMO.sql ./
 cp ../../archives/sazae-toyo-lms-03082022.zip ./
@@ -51,7 +61,7 @@ cp ../../archives/03082022files.tar.gz ./web/sites/default/
 popd
 
 pushd ./${name}/web/sites/default
-tar -zxfm 03082022files.tar.gz
+tar zxfmp 03082022files.tar.gz
 popd
 
 echo "cache clear"
