@@ -8,7 +8,8 @@ name=$1
  sed -i s/\'wp_\'/\'bz_\'/g ./wp-config.php
 
  #install .htaccess file 
- cp  ../.lando_conf/wordpress/.htaccess ./ 
+ rm -f ./.htaccess
+ cp  ../.lando_conf/wordpress/htaccess ./.htaccess
 
 #read -p "Press [Enter] key to move on to the next."
 
