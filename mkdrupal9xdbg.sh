@@ -20,10 +20,18 @@ fi
 #webrootフォルダ名をここで指定する
 webroot=web
 
+#LOGINアカウント設定
+adminuser=admin
+adminpass=admin
+
+#デバッグON/OFF
+XDEBUGFLG=true
+
 # Create folder and enter it
 mkdir ${name} && cd ${name}
 
 # Copy lando_conf to current folder
+rm -rf ./.lando_conf
 cp -rf ../lando_conf ./.lando_conf
 
 # Initialize a drupal9 recipe
@@ -35,11 +43,9 @@ cp -rf ../lando_conf ./.lando_conf
     --name ${name} 
 
 
-
 # Add xdebug service to .lando.yml
 echo "Add xdebug service to .lando.yml"
-sed -i "/webroot:/a \  xdebug: true\n  config:\n    php: .lando_conf/php.ini" .lando.yml
-
+sed -i "/webroot:/a \  xdebug: ${XDEBUGFLG}\n  config:\n    php: .lando_conf/php.ini" .lando.yml
 
 
 echo "Add phpAdmin service"
@@ -60,9 +66,10 @@ echo "Rebuild docker based on .lando.yml"
 # Rebuild it
 lando rebuild -y
 
+
 echo "Start it up"
 # Start it up
-
+  
     
 # Create latest drupal9 project via composer
 lando composer create-project drupal/recommended-project:9.x tmp && cp -r tmp/. . && rm -rf tmp
@@ -74,7 +81,10 @@ lando start
 lando composer require drush/drush
 
 # Install drupal
-lando drush site:install --db-url=mysql://drupal9:drupal9@database/drupal9 -y
+lando drush site:install --db-url=mysql://drupal9:drupal9@database/drupal9 \
+        --account-name=${adminuser} \
+        --account-pass=${adminpass} \
+	-y
 
 # List information about this app
 lando info

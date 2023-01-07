@@ -20,6 +20,10 @@ fi
 #webrootフォルダ名をここで指定する
 webroot=web
 
+#LOGINアカウント設定
+adminuser=admin
+adminpass=admin
+
 # Create folder and enter it
 mkdir ${name} && cd ${name}
 
@@ -42,7 +46,10 @@ lando start
 lando composer require drush/drush
 
 # Install drupal
-lando drush site:install --db-url=mysql://drupal9:drupal9@database/drupal9 -y
+lando drush site:install --db-url=mysql://drupal9:drupal9@database/drupal9 \
+        --account-name=${adminuser} \
+        --account-pass=${adminpass} \
+	-y
 
 # List information about this app
 lando info
