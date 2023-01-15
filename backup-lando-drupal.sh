@@ -17,7 +17,7 @@ if [ ! -d ./${TARGETDIR} ]; then
     echo "対象のディレクトリが存在しません"
     exit 1
 fi
-exit 0
+
 pushd ${TARGETDIR}
 echo データベースのバックアップを取得する
 lando drush sql:dump > ../../archives/${DEST}.sql
