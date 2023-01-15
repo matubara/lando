@@ -22,6 +22,6 @@ pushd ${TARGETDIR}
 echo データベースのバックアップを取得する
 lando drush sql:dump > ../../archives/${DEST}.sql
 echo "ファイルのバックアップを取得する(-vオプション無効)"
-sudo tar czf ../../archives/${DEST}.tar.gz ./web/
+echo '6295' | sudo tar czf ../../archives/${DEST}.tar.gz ./web/
 echo バックアップ完了しました
 popd
