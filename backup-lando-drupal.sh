@@ -1,5 +1,6 @@
 
-echo count=$#
+#!/bin/bash
+
 if [ $# -eq 1 ];then
     TARGETDIR=$1
     DEST=$1
@@ -12,6 +13,11 @@ else
     echo "【第2引数】（オプション）出力ファイル名を指定してください"
     exit 1
 fi
+if [ ! -d ./${TARGETDIR} ]; then
+    echo "対象のディレクトリが存在しません"
+    exit 1
+fi
+exit 0
 pushd ${TARGETDIR}
 echo データベースのバックアップを取得する
 lando drush sql:dump > ../../archives/${DEST}.sql
