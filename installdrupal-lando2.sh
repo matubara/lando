@@ -47,6 +47,7 @@ cp -f ./web/core/assets/scaffold/files/default.services.yml ./web/sites/default/
 cp -f ./web/core/assets/scaffold/files/default.settings.php ./web/sites/default/
 
 #read -p "Press [Enter] key to move on to the next."
+#cp -rf ./bak/web/core/lib/Drupal/Core/Database ./web/core/lib/Drupal/Core
 cp -rf ./bak/web/core ./web
 
 echo "import database"
