@@ -5,12 +5,12 @@ name=$1
  pushd ./${name}
  pwd
 
-echo `ls ./.lando_conf/drupal9/settings.local.php`
+echo `ls ../lando_conf/drupal9/settings.local.php`
 
 #デバッグ環境の設定
 sudo cp -f  ./web/sites/default/settings.php ./web/sites/default/settings.php.bak
-sudo cp -f ./.lando_conf/drupal9/settings.local.php ./web/sites/default/
-sudo cp -f ./.lando_conf/drupal9/development.services.yml ./web/sites/
+sudo cp -f ../lando_conf/drupal9/settings.local.php ./web/sites/default/
+sudo cp -f ../lando_conf/drupal9/development.services.yml ./web/sites/
 
 sudo chmod 777 ./web/sites/default/settings.php
 
