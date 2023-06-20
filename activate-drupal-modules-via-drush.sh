@@ -34,6 +34,9 @@ lando drush pm:install basic_auth
 lando drush pm:install jsonapi
 lando drush pm:install rest
 lando drush pm:install serialization
+lando drush pm:install leaflet
+lando drush pm:install leaflet_markercluster
+lando drush pm:install leaflet_views
 
 lando drush cr
 popd
