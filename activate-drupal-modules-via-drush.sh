@@ -24,6 +24,8 @@ lando drush pm:install settings_tray
 lando drush pm:install statistics
 lando drush pm:install syslog
 lando drush pm:install admin_toolbar
+lando drush pm:install admin_toolbar_links_access_filter
+lando drush pm:install admin_toolbar_search
 lando drush pm:install datetime_range
 lando drush pm:install telephone
 lando drush pm:install config_translation
@@ -37,6 +39,6 @@ lando drush pm:install serialization
 lando drush pm:install leaflet
 lando drush pm:install leaflet_markercluster
 lando drush pm:install leaflet_views
-
+lando drush pm:install multiselect
 lando drush cr
 popd
