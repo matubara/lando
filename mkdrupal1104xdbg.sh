@@ -40,8 +40,6 @@ XDEBUGFLG=true
 # Create folder and enter it
 mkdir ${name} && cd ${name}
 
-pwd
-
 # Copy lando_conf to current folder
 rm -rf ./.lando_conf
 cp -rf ../lando_conf ./.lando_conf
@@ -75,11 +73,8 @@ echo "    type: phpmyadmin" >> .lando.yml
 echo "    hosts:" >> .lando.yml
 echo "      - myservice" >> .lando.yml
 
-
-
-    echo "lando再構築しますが、よろしいですか？"
-    read -p "ok? (y/N): " yn
-
+#echo "lando再構築しますが、よろしいですか？"
+#read -p "ok? (y/N): " yn
 
 echo "Rebuild docker based on .lando.yml"
 # Rebuild it
