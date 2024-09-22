@@ -13,7 +13,7 @@ lando drush pm:install symfony_mailer -y
 lando drush pm:install devel -y
 lando drush pm:install bookable_calendar -y
 lando drush pm:install calendar_view -y
-lando composer require 'drupal/fullcalendar_view:^5.2' -7
+lando drush pm:install fullcalendar_view -y
 
 lando drush pm:install action -y
 lando drush pm:install tracker -y
