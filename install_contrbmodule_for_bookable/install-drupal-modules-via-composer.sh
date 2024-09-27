@@ -18,5 +18,6 @@ lando composer require 'drupal/multiselect:^2.0@beta'
 lando composer require 'drupal/bookable_calendar:^2.2'
 lando composer require 'drupal/calendar_view:^2.1'
 lando composer require 'drupal/fullcalendar_view:^5.2'
+lando composer require 'drupal/single_content_sync:^1.4'
 
 popd
