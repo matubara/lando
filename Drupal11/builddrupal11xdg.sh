@@ -3,14 +3,28 @@ if [ $# -eq 0 ];then
     echo -n foldername=
     #入力を受付、その入力を「str」に代入
     read name
-    echo "フォルダ名は ${name} でよろしいですか？"
-    read -p "ok? (y/N): " yn
-    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    echo "フォルダ名は ${name} でよろしいですか？(Yes[enter]/No)"
+read  yesno
+case "${yesno}" in
+  [nN] | NO | no |No)
+    echo "clancel"
+    exit ;;
+  *)
+    ;;
+esac
+
 elif [ $# -eq 1 ]; then
     name=$1
-    echo "フォルダ名は ${name} でよろしいですか？"
-    read -p "ok? (y/N): " yn
-    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    echo "フォルダ名は ${name} でよろしいですか？(Yes[enter]/No)"
+read  yesno
+case "${yesno}" in
+  [nN] | NO | no |No)
+    echo "clancel"
+    exit ;;
+  *)
+    ;;
+esac
+
 else
     echo "引数が不正です"
     exit 1
@@ -51,5 +65,6 @@ esac
 
 bash ./activate-drupal11-modules.sh ${name}
 
+cd ${name}
 lando info
     echo "すべての処理を完了しました"
