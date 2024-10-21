@@ -15,6 +15,7 @@ lando composer require 'drupal/social_auth:^4.1'
 lando composer require 'drupal/social_auth_google:^4.0'
 lando composer require 'drupal/twig_tweak:^3.4'
 lando composer require 'drupal/ultimate_cron:^2.0@alpha'
+lando composer require 'drupal/group:^3.3'
 
 #lando composer require 'drupal/multiselect:^2.0@beta'
 

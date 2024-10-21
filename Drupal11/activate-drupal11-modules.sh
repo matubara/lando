@@ -19,6 +19,7 @@ lando drush pm:install field_group -y
 lando drush pm:install datetime_range -y
 lando drush pm:install telephone -y
 lando drush pm:install twig_tweak -y
+lando drush pm:install group -y
 #Development
 lando drush pm:install devel -y
 lando drush pm:install devel_generate -y
