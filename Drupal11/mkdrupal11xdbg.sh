@@ -2,6 +2,8 @@
 recipe=drupal10
 #drupalver=:11.0.5
 drupalver=
+phpver=8.3
+dbver=mysql:8.0
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=
@@ -12,14 +14,11 @@ if [ $# -eq 0 ];then
     case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
 elif [ $# -eq 1 ]; then
     name=$1
-elif [ $# -eq 2 ] && [ $1 = "drupal9" ]; then
+elif [ $# -eq 2 ] && [ $2 = "drupal10" ]; then
     name=$1
-    recipe=drupal9
-    drupalver=9.x
-elif [ $# -eq 2 ] && [ $1 = "drupal10" ]; then
-    name=$1
-    recipe=drupal10
-    drupalver=10.0.x-dev@dev
+    drupalver=:10.3.6
+    phpver=8.1
+    dbver=mysql:5.7
 else
     echo "引数が不正です"
     exit 1
@@ -38,8 +37,46 @@ adminpass=admin
 #デバッグON/OFF
 XDEBUGFLG=true
 
+
+####################################################
+# kusanagiプロビジョニングとDrupalインストール実施 #
+####################################################
+
+# 表示用制御文字の設定
+ESC=$(printf '\033') RESET="${ESC}[0m"
+
+BOLD="${ESC}[1m"        FAINT="${ESC}[2m"       ITALIC="${ESC}[3m"
+UNDERLINE="${ESC}[4m"   BLINK="${ESC}[5m"       FAST_BLINK="${ESC}[6m"
+REVERSE="${ESC}[7m"     CONCEAL="${ESC}[8m"     STRIKE="${ESC}[9m"
+GOTHIC="${ESC}[20m"     DOUBLE_UNDERLINE="${ESC}[21m" NORMAL="${ESC}[22m"
+NO_ITALIC="${ESC}[23m"  NO_UNDERLINE="${ESC}[24m"     NO_BLINK="${ESC}[25m"
+NO_REVERSE="${ESC}[27m" NO_CONCEAL="${ESC}[28m"       NO_STRIKE="${ESC}[29m"
+BLACK="${ESC}[30m"      RED="${ESC}[31m"        GREEN="${ESC}[32m"
+YELLOW="${ESC}[33m"     BLUE="${ESC}[34m"       MAGENTA="${ESC}[35m"
+CYAN="${ESC}[36m"       WHITE="${ESC}[37m"      DEFAULT="${ESC}[39m"
+BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
+BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
+BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
+
+CONFIRMMES="${RED}よろしいですか？ENTERキーを押してください。次に進みます。${RESET}"
+
+
+
+if [ -d ./${name} ]; then
+  echo "既にフォルダが存在します。";
+  echo "処理を中断します。";
+  exit 1;
+fi
+
+echo "${name} ディレクトリを作成します";
+read -p ${CONFIRMMES};
+
 # Create folder and enter it
 mkdir ${name} && cd ${name}
+
+pwd
+echo "lando initを実行して良いですか"
+read -p ${CONFIRMMES};
 
 # Copy lando_conf to current folder
 rm -rf ./.lando_conf
@@ -56,7 +93,7 @@ cp -rf ../lando_conf ./.lando_conf
 
 # Add xdebug service to .lando.yml
 echo "Add xdebug service to .lando.yml"
-sed -i "/webroot:/a \  xdebug: ${XDEBUGFLG}\n  php: 8.3\n  config:\n    php: .lando_conf/php.ini" .lando.yml
+sed -i "/webroot:/a \  xdebug: ${XDEBUGFLG}\n  php: ${phpver}\n  database: ${dbver}\n  config:\n    php: .lando_conf/php.ini" .lando.yml
 
 
 echo "Add phpAdmin service"
@@ -67,15 +104,16 @@ echo "  appserver:" >> .lando.yml
 echo "    overrides:" >> .lando.yml
 echo "      extra_hosts:" >> .lando.yml
 echo '        - ${LANDO_HOST_NAME_DEV:-host}:${LANDO_HOST_GATEWAY_DEV:-host-gateway}' >> .lando.yml
-echo "  myservice:" >> .lando.yml
-echo "    type: mysql:8.0" >> .lando.yml
+# echo "  myservice:" >> .lando.yml
+# echo "    type: mysql:8.0" >> .lando.yml
 echo "  phpmyadmin:" >> .lando.yml
 echo "    type: phpmyadmin" >> .lando.yml
 echo "    hosts:" >> .lando.yml
-echo "      - myservice" >> .lando.yml
+# echo "      - myservice" >> .lando.yml
+echo "      - database" >> .lando.yml
 
-#echo "lando再構築しますが、よろしいですか？"
-#read -p "ok? (y/N): " yn
+echo "lando再構築しますが、よろしいですか？"
+read -p ${CONFIRMMES};
 
 echo "Rebuild docker based on .lando.yml"
 # Rebuild it
@@ -87,7 +125,13 @@ echo "Start it up"
   
     
 # Create latest drupal9 project via composer
+echo "lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp"
+echo "Drupal setupしますが、よろしいですか？"
+read -p ${CONFIRMMES};
 lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp
+
+echo "Drupal Installしますが、よろしいですか？"
+read -p ${CONFIRMMES};
 
 # Start it up
 lando start
@@ -97,15 +141,20 @@ lando composer require drush/drush
 
 # Install drupal
 # drush si --db-url=mysql://root:pass@localhost:port/dbname
-lando drush site:install --db-url=mysql://mysql:mysql@myservice:3306/database \
+#lando drush site:install --db-url=mysql://mysql:mysql@myservice:3306/database \
+lando drush site:install --db-url=mysql://${recipe}:${recipe}@database/${recipe} \
         --account-name=${adminuser} \
         --account-pass=${adminpass} \
 	-y
-#lando drush site:install --db-url=mysql://${recipe}:${recipe}@database/${recipe} \
-#        --account-name=${adminuser} \
-#        --account-pass=${adminpass} \
-#	-y
 
 # List information about this app
 lando info
 
+echo "appをインストールしますが、よろしいですか？"
+read -p ${CONFIRMMES};
+
+cp ../restore_work ./ -rf
+cd ./restore_work 
+./lando_restore_drupal.sh ${name} 
+
+echo "${YELLOW}すべての処理を完了しました。${RESET}" 
