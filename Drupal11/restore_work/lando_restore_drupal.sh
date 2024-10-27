@@ -1,3 +1,5 @@
+STEPMODE=false
+
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=
@@ -49,18 +51,19 @@ backupdb=./20241026_023155_chatgpt100.sql
 
 
 echo "【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行"
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
+
 
 
 echo 設定ファイルのバックアップを取る
 ls ${webpath}/sites/default/settings.php 
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
 echo ファイルを展開する
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 tar zxf ${backupfile}
 echo VENDER,WEBフォルダ、COMPOSERファイルをBAKフォルダに移動する
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo rm -rf ${projpath}/bak
 sudo mkdir ${projpath}/bak
 sudo mv  ${webpath} ${projpath}/bak
@@ -68,7 +71,7 @@ sudo mv  ${vendorpath} ${projpath}/bak
 sudo mv  ${projpath}/composer.json ${projpath}/bak
 sudo mv  ${projpath}/composer.lock ${projpath}/bak
 echo バックアップファイルのWEB,VENDERフォルダとCOMPSER.*ファイルを元に場所にコピーする
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 mv -f ./chatgpt100/web ${projpath}
 mv -f ./chatgpt100/vendor ${projpath}
 cp -f ./chatgpt100/composer.* ${projpath}
@@ -80,7 +83,7 @@ sudo chmod 777 ${webpath} -R
 sudo chmod 777 ${vendorpath} -R
 
 echo データベースをリストアする
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 lando db-import ${backupdb}
 
 echo "アプリのインストールを完了しました"
