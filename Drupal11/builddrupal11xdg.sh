@@ -1,3 +1,25 @@
+####################################################
+# kusanagiプロビジョニングとDrupalインストール実施 #
+####################################################
+
+# 表示用制御文字の設定
+ESC=$(printf '\033') RESET="${ESC}[0m"
+
+BOLD="${ESC}[1m"        FAINT="${ESC}[2m"       ITALIC="${ESC}[3m"
+UNDERLINE="${ESC}[4m"   BLINK="${ESC}[5m"       FAST_BLINK="${ESC}[6m"
+REVERSE="${ESC}[7m"     CONCEAL="${ESC}[8m"     STRIKE="${ESC}[9m"
+GOTHIC="${ESC}[20m"     DOUBLE_UNDERLINE="${ESC}[21m" NORMAL="${ESC}[22m"
+NO_ITALIC="${ESC}[23m"  NO_UNDERLINE="${ESC}[24m"     NO_BLINK="${ESC}[25m"
+NO_REVERSE="${ESC}[27m" NO_CONCEAL="${ESC}[28m"       NO_STRIKE="${ESC}[29m"
+BLACK="${ESC}[30m"      RED="${ESC}[31m"        GREEN="${ESC}[32m"
+YELLOW="${ESC}[33m"     BLUE="${ESC}[34m"       MAGENTA="${ESC}[35m"
+CYAN="${ESC}[36m"       WHITE="${ESC}[37m"      DEFAULT="${ESC}[39m"
+BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
+BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
+BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
+
+CONFIRMMES="${RED}よろしければENTERキーで次に進みます。問題があればNを押して中断してください。${RESET}"
+
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=
@@ -30,8 +52,20 @@ else
     exit 1
 fi
 
-bash ./mkdrupal11xdbg.sh ${name}
-echo "次のステップに進んでも大丈夫ですか?(Yes[Enter]/No)"
+echo Drupal開発環境を構築します
+echo ${CONFIRMMES};
+read  yesno
+case "${yesno}" in
+  [nN] | NO | no |No)
+    echo "clancel"
+    exit ;;
+  *)
+    ;;
+esac
+bash ./mkdrupal11xdbg.sh ${name} drupal10
+
+echo デバッグモードを有効にします
+echo ${CONFIRMMES};
 read  yesno
 case "${yesno}" in
   [nN] | NO | no |No)
@@ -42,7 +76,9 @@ case "${yesno}" in
 esac
 
 bash ./add-drupal11-devmode.sh ${name}
-echo "次のステップに進んでも大丈夫ですか?(Yes[Enter]/No)"
+
+echo コントリビュートモジュールをインストールします
+echo ${CONFIRMMES};
 read  yesno
 case "${yesno}" in
   [nN] | NO | no |No)
@@ -53,8 +89,9 @@ case "${yesno}" in
 esac
 
 bash ./install-drupal11-modules-via-composer.sh ${name}
-echo "次のステップに進んでも大丈夫ですか?(Yes[Enter]/No)"
-read  yesno
+
+echo コントリビュートモジュールを有効化します
+echo ${CONFIRMMES};
 case "${yesno}" in
   [nN] | NO | no |No)
     echo "clancel"
@@ -65,6 +102,33 @@ esac
 
 bash ./activate-drupal11-modules.sh ${name}
 
+
+echo "アプリをインストールします"
+echo ${CONFIRMMES};
+case "${yesno}" in
+  [nN] | NO | no |No)
+    echo "clancel"
+    exit ;;
+  *)
+    ;;
+esac
+
+cp ./restore_work ./${name} -rf
+cd ./${name}/restore_work 
+./lando_restore_drupal.sh ${name} 
+
+echo "${YELLOW}すべての処理を完了しました。${RESET}" 
 cd ${name}
 lando info
-    echo "すべての処理を完了しました"
+
+echo "アプリをインストールしますか？"
+echo ${CONFIRMMES};
+case "${yesno}" in
+  [nN] | NO | no |No)
+    echo "clancel"
+    exit ;;
+  *)
+    ;;
+esac
+echo アプリを起動する
+google-chrome https://${name}.lndo.site

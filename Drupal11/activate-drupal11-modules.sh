@@ -23,7 +23,6 @@ lando drush pm:install group -y
 lando drush pm:install gnode -y
 lando drush pm:install group_support_revisions -y
 lando drush pm:install content_moderation -y
-
 #Development
 lando drush pm:install devel -y
 lando drush pm:install devel_generate -y

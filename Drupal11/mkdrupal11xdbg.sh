@@ -58,7 +58,7 @@ BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
 BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
 BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
 
-CONFIRMMES="${RED}よろしいですか？ENTERキーを押してください。次に進みます。${RESET}"
+CONFIRMMES="${RED}よろしければENTERキーを押してください。次に進みます。${RESET}"
 
 
 
@@ -150,11 +150,3 @@ lando drush site:install --db-url=mysql://${recipe}:${recipe}@database/${recipe}
 # List information about this app
 lando info
 
-echo "appをインストールしますが、よろしいですか？"
-read -p ${CONFIRMMES};
-
-cp ../restore_work ./ -rf
-cd ./restore_work 
-./lando_restore_drupal.sh ${name} 
-
-echo "${YELLOW}すべての処理を完了しました。${RESET}" 
