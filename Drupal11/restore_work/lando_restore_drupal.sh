@@ -46,8 +46,8 @@ drupalproj=${name}
 projpath=/home/matsubara/${profile}/${drupalproj}
 webpath=${projpath}/web
 vendorpath=${projpath}/vendor
-backupfile=./20241026_023155_chatgpt100.tar.gz
-backupdb=./20241026_023155_chatgpt100.sql
+backupfile=./20241027_041002_chatgpt100.tar.gz
+backupdb=./20241027_041002_chatgpt100.sql
 
 
 echo "【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行"
