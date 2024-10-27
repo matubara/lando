@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+STEPMODE=false
 recipe=drupal10
 #drupalver=:11.0.5
 drupalver=
@@ -69,14 +70,14 @@ if [ -d ./${name} ]; then
 fi
 
 echo "${name} ディレクトリを作成します";
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Create folder and enter it
 mkdir ${name} && cd ${name}
 
 pwd
 echo "lando initを実行して良いですか"
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Copy lando_conf to current folder
 rm -rf ./.lando_conf
@@ -113,7 +114,7 @@ echo "    hosts:" >> .lando.yml
 echo "      - database" >> .lando.yml
 
 echo "lando再構築しますが、よろしいですか？"
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 echo "Rebuild docker based on .lando.yml"
 # Rebuild it
@@ -127,11 +128,11 @@ echo "Start it up"
 # Create latest drupal9 project via composer
 echo "lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp"
 echo "Drupal setupしますが、よろしいですか？"
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp
 
 echo "Drupal Installしますが、よろしいですか？"
-read -p ${CONFIRMMES};
+if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Start it up
 lando start

@@ -1,3 +1,4 @@
+STEPMODE=false
 ####################################################
 # kusanagiプロビジョニングとDrupalインストール実施 #
 ####################################################
@@ -53,6 +54,7 @@ else
 fi
 
 echo Drupal開発環境を構築します
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
 case "${yesno}" in
@@ -62,9 +64,11 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 bash ./mkdrupal11xdbg.sh ${name} drupal10
 
 echo デバッグモードを有効にします
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
 case "${yesno}" in
@@ -74,10 +78,12 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 
 bash ./add-drupal11-devmode.sh ${name}
 
 echo コントリビュートモジュールをインストールします
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
 case "${yesno}" in
@@ -87,10 +93,12 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 
 bash ./install-drupal11-modules-via-composer.sh ${name}
 
 echo コントリビュートモジュールを有効化します
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 case "${yesno}" in
   [nN] | NO | no |No)
@@ -99,11 +107,13 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 
 bash ./activate-drupal11-modules.sh ${name}
 
 
 echo "アプリをインストールします"
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 case "${yesno}" in
   [nN] | NO | no |No)
@@ -112,6 +122,7 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 
 cp ./restore_work ./${name} -rf
 cd ./${name}/restore_work 
@@ -122,6 +133,7 @@ cd ${name}
 lando info
 
 echo "アプリをインストールしますか？"
+if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 case "${yesno}" in
   [nN] | NO | no |No)
@@ -130,5 +142,6 @@ case "${yesno}" in
   *)
     ;;
 esac
+fi
 echo アプリを起動する
 google-chrome https://${name}.lndo.site
