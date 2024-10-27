@@ -53,7 +53,7 @@ else
     exit 1
 fi
 
-echo Drupal開発環境を構築します
+echo "${YELLOW}Drupal開発環境を構築します${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
@@ -67,7 +67,7 @@ esac
 fi
 bash ./mkdrupal11xdbg.sh ${name} drupal10
 
-echo デバッグモードを有効にします
+echo "${YELLOW}デバッグモードを有効にします${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
@@ -82,7 +82,7 @@ fi
 
 bash ./add-drupal11-devmode.sh ${name}
 
-echo コントリビュートモジュールをインストールします
+echo "${YELLOW}コントリビュートモジュールをインストールします${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 read  yesno
@@ -97,7 +97,7 @@ fi
 
 bash ./install-drupal11-modules-via-composer.sh ${name}
 
-echo コントリビュートモジュールを有効化します
+echo "${YELLOW}コントリビュートモジュールを有効化します${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 case "${yesno}" in
@@ -112,7 +112,7 @@ fi
 bash ./activate-drupal11-modules.sh ${name}
 
 
-echo "アプリをインストールします"
+echo "${YELLOW}アプリをインストールします${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
 case "${yesno}" in
@@ -128,20 +128,6 @@ cp ./restore_work ./${name} -rf
 cd ./${name}/restore_work 
 ./lando_restore_drupal.sh ${name} 
 
-echo "${YELLOW}すべての処理を完了しました。${RESET}" 
-cd ${name}
 lando info
+echo "${YELLOW}すべての処理を完了しました。${RESET}" 
 
-echo "アプリをインストールしますか？"
-if "${STEPMODE}"; then
-echo ${CONFIRMMES};
-case "${yesno}" in
-  [nN] | NO | no |No)
-    echo "clancel"
-    exit ;;
-  *)
-    ;;
-esac
-fi
-echo アプリを起動する
-google-chrome https://${name}.lndo.site
