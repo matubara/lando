@@ -14,9 +14,14 @@ elif [ $# -eq 1 ]; then
     name=$1
 elif [ $# -eq 2 ] && [ $2 = "drupal10" ]; then
     name=$1
-    drupalver=:10.3.6
-    phpver=8.1
-    dbver=mysql:5.7
+    drupalver=d10_drupalver
+    phpver=d10_phpver
+    dbver=d10_dbver
+elif [ $# -eq 2 ] && [ $2 = "drupal11" ]; then
+    name=$1
+    drupalver=d11_drupalver
+    phpver=d11_phpver
+    dbver=d11_dbver
 else
     echo "引数が不正です"
     exit 1

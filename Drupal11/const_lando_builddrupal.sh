@@ -1,15 +1,15 @@
-STEPMODE=true #false
+STEPMODE=false
 recipe=drupal10
 
 #Drupal11の設定値（特定のバージョン11.0.5）
-#drupalver=:11.0.5
-#phpver=8.3
-#dbver=mysql:8.0
+d11_drupalver=:11.0.5
+d11_phpver=8.3
+d11_dbver=mysql:8.0
 
 #Drupal10の設定値（特定のバージョン10.3.6）
-#drupalver=:10.3.6
-#phpver=8.1
-#dbver=mysql:5.7
+d10_drupalver=:10.3.6
+d10_phpver=8.1
+d10_dbver=mysql:5.7
 
 #Defaultの設定値（drupalはd11最新版取得）
 drupalver=
