@@ -1,60 +1,38 @@
 #!/usr/bin/bash
-#constファイルの読み込み
-source ./const_lando_builddrupal.sh
-
-####################################################
-# kusanagiプロビジョニングとDrupalインストール実施 #
-####################################################
-
-# 表示用制御文字の設定
-ESC=$(printf '\033') RESET="${ESC}[0m"
-
-BOLD="${ESC}[1m"        FAINT="${ESC}[2m"       ITALIC="${ESC}[3m"
-UNDERLINE="${ESC}[4m"   BLINK="${ESC}[5m"       FAST_BLINK="${ESC}[6m"
-REVERSE="${ESC}[7m"     CONCEAL="${ESC}[8m"     STRIKE="${ESC}[9m"
-GOTHIC="${ESC}[20m"     DOUBLE_UNDERLINE="${ESC}[21m" NORMAL="${ESC}[22m"
-NO_ITALIC="${ESC}[23m"  NO_UNDERLINE="${ESC}[24m"     NO_BLINK="${ESC}[25m"
-NO_REVERSE="${ESC}[27m" NO_CONCEAL="${ESC}[28m"       NO_STRIKE="${ESC}[29m"
-BLACK="${ESC}[30m"      RED="${ESC}[31m"        GREEN="${ESC}[32m"
-YELLOW="${ESC}[33m"     BLUE="${ESC}[34m"       MAGENTA="${ESC}[35m"
-CYAN="${ESC}[36m"       WHITE="${ESC}[37m"      DEFAULT="${ESC}[39m"
-BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
-BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
-BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
-
-CONFIRMMES="${RED}よろしければENTERキーで次に進みます。問題があればNを押して中断してください。${RESET}"
+######################################################
+# DRUPALSET: mkdrupal11xdbg.shの第二引数に引き渡す定数
 
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=
-    #入力を受付、その入力を「str」に代入
     read name
-    echo "フォルダ名は ${name} でよろしいですか？(Yes[enter]/No)"
-read  yesno
-case "${yesno}" in
-  [nN] | NO | no |No)
-    echo "clancel"
-    exit ;;
-  *)
-    ;;
-esac
-
+    #デフォルト値設定
+    DRUPALSET=drupal10
 elif [ $# -eq 1 ]; then
     name=$1
-    echo "フォルダ名は ${name} でよろしいですか？(Yes[enter]/No)"
-read  yesno
-case "${yesno}" in
-  [nN] | NO | no |No)
-    echo "clancel"
-    exit ;;
-  *)
-    ;;
-esac
-
+    #デフォルト値設定
+    DRUPALSET=drupal10
+elif [ $# -eq 2 ] && [ $2 = "drupal10" ]; then
+    name=$1
+    DRUPALSET=$2
+elif [ $# -eq 2 ] && [ $2 = "drupal11" ]; then
+    name=$1
+    DRUPALSET=$2
 else
     echo "引数が不正です"
     exit 1
 fi
+######################################################
+    echo "【確認】設定内容を確認してください"
+    echo "フォルダ名: ${name}"
+    echo "Drupalバージョン: ${DRUPALSET}" 
+    read -p "よろしければ(y)、中断する場合は(N)を押してください (y/N): " yn
+    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+######################################################
+#constファイルの読み込み
+source ./const_lando_builddrupal.sh
+######################################################
+
 
 echo "${YELLOW}Drupal開発環境を構築します${RESET}"
 if "${STEPMODE}"; then
@@ -68,7 +46,9 @@ case "${yesno}" in
     ;;
 esac
 fi
-bash ./mkdrupal11xdbg.sh ${name} drupal10
+
+bash ./mkdrupal11xdbg.sh ${name} ${DRUPALSET}
+
 
 echo "${YELLOW}デバッグモードを有効にします${RESET}"
 if "${STEPMODE}"; then
@@ -85,6 +65,7 @@ fi
 
 bash ./add-drupal11-devmode.sh ${name}
 
+
 echo "${YELLOW}コントリビュートモジュールをインストールします${RESET}"
 if "${STEPMODE}"; then
 echo ${CONFIRMMES};
@@ -99,6 +80,7 @@ esac
 fi
 
 bash ./install-drupal11-modules-via-composer.sh ${name}
+
 
 echo "${YELLOW}コントリビュートモジュールを有効化します${RESET}"
 if "${STEPMODE}"; then
@@ -135,4 +117,5 @@ echo "${YELLOW}アプリをインストールします${RESET}"
 fi
 
 lando info
+
 echo "${YELLOW}すべての処理を完了しました。${RESET}" 

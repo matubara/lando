@@ -1,24 +1,28 @@
 #ステップ実行モード
 STEPMODE=false
 #アプリインストール
-APPINSTALL=true
+APPINSTALL=false
 
-recipe=drupal10
+################################################################
+#DRUPALSET: mkdrupal11xdbg.shの第二引数(左記以外では使用されない)
 
-#Drupal11の設定値（特定のバージョン11.0.5）
-d11_drupalver=:11.0.5
-d11_phpver=8.3
-d11_dbver=mysql:8.0
-
-#Drupal10の設定値（特定のバージョン10.3.6）
-d10_drupalver=:10.3.6
-d10_phpver=8.1
-d10_dbver=mysql:5.7
-
-#Defaultの設定値（drupalはd11最新版取得）
-drupalver=
+if [ ${DRUPALSET} = "drupal11" ]; then
+#DRUPALSET=Drupal11の設定値（特定のバージョン11.0.5）
+drupalver=:11.0.5
 phpver=8.3
 dbver=mysql:8.0
+
+elif [ ${DRUPALSET} = "drupal10" ]; then
+#RUPALSET=Drupal10の設定値（特定のバージョン10.3.6）
+drupalver=:10.3.6
+phpver=8.1
+dbver=mysql:5.7
+
+fi
+#################################################################
+
+#LANDO設定
+recipe=drupal10
 
 #LOGINアカウント設定
 adminuser=admin

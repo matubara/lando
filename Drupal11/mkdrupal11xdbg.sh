@@ -1,31 +1,48 @@
 #!/usr/bin/bash
-#constファイルの読み込み
-source ./const_lando_builddrupal.sh
 
+###############################################################
+#下記変数の入力と、定数の読み込み
+#name, DRUPALSET 
+#定数読み込みの順序に注意すること
+# ※ DRUPALSETの値により読み込まれる定数の内容が変わる
+###############################################################
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=
-    #入力を受付、その入力を「str」に代入
+    #入力を受付、その入力を「name」に代入
     read name
-    echo "フォルダ名は ${name} でよろしいですか？"
-    read -p "ok? (y/N): " yn
-    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    #デフォルト値設定
+    DRUPALSET=drupal10
 elif [ $# -eq 1 ]; then
     name=$1
+    #デフォルト値設定
+    DRUPALSET=drupal10
 elif [ $# -eq 2 ] && [ $2 = "drupal10" ]; then
     name=$1
-    drupalver=${d10_drupalver}
-    phpver=${d10_phpver}
-    dbver=${d10_dbver}
+    DRUPALSET=$2
 elif [ $# -eq 2 ] && [ $2 = "drupal11" ]; then
     name=$1
-    drupalver=${d11_drupalver}
-    phpver=${d11_phpver}
-    dbver=${d11_dbver}
+    DRUPALSET=$2
 else
     echo "引数が不正です"
     exit 1
 fi
+
+###############################################################
+#constファイルの読み込み
+source ./const_lando_builddrupal.sh
+###############################################################
+
+######################################################
+if "${STEPMODE}"; then
+    echo "【確認】設定内容を確認してください"
+    echo "フォルダ名: ${name}"
+    echo "Drupalバージョン: ${DRUPALSET}"
+    read -p "よろしければ(y)、中断する場合は(N)を押してください (y/N): " yn
+    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+fi
+######################################################
+
 
     echo "現在起動中のコンテナをすべて停止する"
     docker stop $(docker ps -q)
@@ -39,29 +56,6 @@ adminpass=admin
 
 #デバッグON/OFF
 XDEBUGFLG=true
-
-
-####################################################
-# kusanagiプロビジョニングとDrupalインストール実施 #
-####################################################
-
-# 表示用制御文字の設定
-ESC=$(printf '\033') RESET="${ESC}[0m"
-
-BOLD="${ESC}[1m"        FAINT="${ESC}[2m"       ITALIC="${ESC}[3m"
-UNDERLINE="${ESC}[4m"   BLINK="${ESC}[5m"       FAST_BLINK="${ESC}[6m"
-REVERSE="${ESC}[7m"     CONCEAL="${ESC}[8m"     STRIKE="${ESC}[9m"
-GOTHIC="${ESC}[20m"     DOUBLE_UNDERLINE="${ESC}[21m" NORMAL="${ESC}[22m"
-NO_ITALIC="${ESC}[23m"  NO_UNDERLINE="${ESC}[24m"     NO_BLINK="${ESC}[25m"
-NO_REVERSE="${ESC}[27m" NO_CONCEAL="${ESC}[28m"       NO_STRIKE="${ESC}[29m"
-BLACK="${ESC}[30m"      RED="${ESC}[31m"        GREEN="${ESC}[32m"
-YELLOW="${ESC}[33m"     BLUE="${ESC}[34m"       MAGENTA="${ESC}[35m"
-CYAN="${ESC}[36m"       WHITE="${ESC}[37m"      DEFAULT="${ESC}[39m"
-BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
-BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
-BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
-
-CONFIRMMES="${RED}よろしければENTERキーを押してください。次に進みます。${RESET}"
 
 
 
