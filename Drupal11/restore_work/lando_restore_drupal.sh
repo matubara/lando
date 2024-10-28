@@ -1,4 +1,5 @@
-STEPMODE=false
+
+source ../../const_lando_builddrupal.sh 
 
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
@@ -8,47 +9,48 @@ if [ $# -eq 0 ];then
     echo "フォルダ名は ${name} でよろしいですか？"
     read -p "ok? (y/N): " yn
     case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+
 elif [ $# -eq 1 ]; then
     name=$1
-    echo "フォルダ名は ${name} でよろしいですか？"
-    read -p "ok? (y/N): " yn
-    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    echo "フォルダ名は ${name} です"
+    if "${STEPMODE}"; then
+      read -p "ok? (y/N): " yn
+      case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    fi
 else
     echo "引数が不正です"
     exit 1
 fi
 
-####################################################
-# kusanagiプロビジョニングとDrupalインストール実施 #
-####################################################
-
-# 表示用制御文字の設定
-ESC=$(printf '\033') RESET="${ESC}[0m"
-
-BOLD="${ESC}[1m"        FAINT="${ESC}[2m"       ITALIC="${ESC}[3m"
-UNDERLINE="${ESC}[4m"   BLINK="${ESC}[5m"       FAST_BLINK="${ESC}[6m"
-REVERSE="${ESC}[7m"     CONCEAL="${ESC}[8m"     STRIKE="${ESC}[9m"
-GOTHIC="${ESC}[20m"     DOUBLE_UNDERLINE="${ESC}[21m" NORMAL="${ESC}[22m"
-NO_ITALIC="${ESC}[23m"  NO_UNDERLINE="${ESC}[24m"     NO_BLINK="${ESC}[25m"
-NO_REVERSE="${ESC}[27m" NO_CONCEAL="${ESC}[28m"       NO_STRIKE="${ESC}[29m"
-BLACK="${ESC}[30m"      RED="${ESC}[31m"        GREEN="${ESC}[32m"
-YELLOW="${ESC}[33m"     BLUE="${ESC}[34m"       MAGENTA="${ESC}[35m"
-CYAN="${ESC}[36m"       WHITE="${ESC}[37m"      DEFAULT="${ESC}[39m"
-BG_BLACK="${ESC}[40m"   BG_RED="${ESC}[41m"     BG_GREEN="${ESC}[42m"
-BG_YELLOW="${ESC}[43m"  BG_BLUE="${ESC}[44m"    BG_MAGENTA="${ESC}[45m"
-BG_CYAN="${ESC}[46m"    BG_WHITE="${ESC}[47m"   BG_DEFAULT="${ESC}[49m"
-
-CONFIRMMES="${RED}よろしいですか？ENTERキーを押してください。次に進みます。${RESET}"
-
-profile=lando
+#変数の定義
+#Drupalプロジェクトフォルダ名
 drupalproj=${name}
 #Drupalプロジェクトパス
 projpath=/home/matsubara/${profile}/${drupalproj}
+#WEBパス
 webpath=${projpath}/web
+#VENDORパス
 vendorpath=${projpath}/vendor
-backupfile=./20241027_041002_chatgpt100.tar.gz
-backupdb=./20241027_041002_chatgpt100.sql
 
+if [ -d ./${projpath} ]; then
+  echo "既にフォルダが存在します。";
+  echo "処理を中断します。";
+  exit 1;
+fi
+if [ -f ./${backupfile} ]; then
+  echo "【passed】インポート対象ファイル ${backupfile} が見つかりました。";
+else
+  echo "インポート対象ファイル ${backupfile} が存在しません。";
+  echo "処理を中断します。";
+  exit 1;
+fi
+if [ -f ./${backupdb} ]; then
+  echo "【passed】インポート対象DBファイル ${backupdb} が見つかりました。";
+else
+  echo "インポート対象DBファイル ${backupdb} が存在しません。";
+  echo "処理を中断します。";
+  exit 1;
+fi
 
 echo "【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
@@ -61,7 +63,7 @@ if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
 echo ファイルを展開する
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-tar zxf ${backupfile}
+tar zxf ./${backupfile}
 echo VENDER,WEBフォルダ、COMPOSERファイルをBAKフォルダに移動する
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo rm -rf ${projpath}/bak
@@ -84,6 +86,6 @@ sudo chmod 777 ${vendorpath} -R
 
 echo データベースをリストアする
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-lando db-import ${backupdb}
+lando db-import ./${backupdb}
 
 echo "アプリのインストールを完了しました"
