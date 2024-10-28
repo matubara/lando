@@ -1,10 +1,7 @@
 #!/usr/bin/bash
-STEPMODE=false
-recipe=drupal10
-#drupalver=:11.0.5
-drupalver=
-phpver=8.3
-dbver=mysql:8.0
+#constファイルの読み込み
+source ./const_lando_builddrupal.sh
+
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
     echo -n foldername=

@@ -1,11 +1,20 @@
 STEPMODE=true #false
 recipe=drupal10
+
+#Drupal11の設定値（特定のバージョン11.0.5）
 #drupalver=:11.0.5
-drupalver=:10.3.6
 #phpver=8.3
-phpver=8.1
 #dbver=mysql:8.0
-dbver=mysql:5.7
+
+#Drupal10の設定値（特定のバージョン10.3.6）
+#drupalver=:10.3.6
+#phpver=8.1
+#dbver=mysql:5.7
+
+#Defaultの設定値（drupalはd11最新版取得）
+drupalver=
+phpver=8.3
+dbver=mysql:8.0
 
 #LOGINアカウント設定
 adminuser=admin
