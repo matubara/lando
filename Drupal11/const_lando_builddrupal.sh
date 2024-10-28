@@ -1,4 +1,8 @@
+#ステップ実行モード
 STEPMODE=false
+#アプリインストール
+APPINSTALL=true
+
 recipe=drupal10
 
 #Drupal11の設定値（特定のバージョン11.0.5）

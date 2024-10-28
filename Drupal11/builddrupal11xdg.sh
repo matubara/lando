@@ -1,4 +1,7 @@
-STEPMODE=false
+#!/usr/bin/bash
+#constファイルの読み込み
+source ./const_lando_builddrupal.sh
+
 ####################################################
 # kusanagiプロビジョニングとDrupalインストール実施 #
 ####################################################
@@ -112,22 +115,24 @@ fi
 bash ./activate-drupal11-modules.sh ${name}
 
 
+if "${APPINSTALL}"; then
 echo "${YELLOW}アプリをインストールします${RESET}"
-if "${STEPMODE}"; then
-echo ${CONFIRMMES};
-case "${yesno}" in
-  [nN] | NO | no |No)
-    echo "clancel"
-    exit ;;
-  *)
-    ;;
-esac
+	if "${STEPMODE}"; then
+	echo ${CONFIRMMES};
+	case "${yesno}" in
+	  [nN] | NO | no |No)
+		echo "clancel"
+		exit ;;
+	  *)
+		;;
+	esac
+	fi
+	#アプリ実行用フォルダをDrupalプロジェクトフォルダに作成する
+	cp ./restore_work ./${name} -rf
+	cd ./${name}/restore_work 
+	#アプリインストールスクリプトを実行する
+	./lando_restore_drupal.sh ${name} 
 fi
-
-cp ./restore_work ./${name} -rf
-cd ./${name}/restore_work 
-./lando_restore_drupal.sh ${name} 
 
 lando info
 echo "${YELLOW}すべての処理を完了しました。${RESET}" 
-
