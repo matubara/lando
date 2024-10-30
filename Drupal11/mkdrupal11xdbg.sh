@@ -65,14 +65,14 @@ if [ -d ./${name} ]; then
   exit 1;
 fi
 
-echo "${name} ディレクトリを作成します";
+echo "${GREEN}${name} ディレクトリを作成します${RESET}";
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Create folder and enter it
 mkdir ${name} && cd ${name}
 
 pwd
-echo "lando initを実行して良いですか"
+echo "${GREEN}lando 設定ファイルを作成します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Copy lando_conf to current folder
@@ -109,7 +109,7 @@ echo "    hosts:" >> .lando.yml
 # echo "      - myservice" >> .lando.yml
 echo "      - database" >> .lando.yml
 
-echo "lando再構築しますが、よろしいですか？"
+echo "${GREEN}lando 環境を構築します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 echo "Rebuild docker based on .lando.yml"
@@ -123,11 +123,11 @@ echo "Start it up"
     
 # Create latest drupal9 project via composer
 echo "lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp"
-echo "Drupal setupしますが、よろしいですか？"
+echo "${GREEN}Drupal をインストールします${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 lando composer create-project drupal/recommended-project${drupalver} tmp && cp -r tmp/. . && rm -rf tmp
 
-echo "Drupal Installしますが、よろしいですか？"
+echo "${GREEN}Drupal をセットアップします${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Start it up
