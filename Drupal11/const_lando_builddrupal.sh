@@ -1,18 +1,18 @@
 #ステップ実行モード
 STEPMODE=false
 #アプリインストール
-APPINSTALL=false
+APPINSTALL=true
 
 ################################################################
 #DRUPALSET: mkdrupal11xdbg.shの第二引数(左記以外では使用されない)
 
-if [ ${DRUPALSET} = "drupal11" ]; then
+if [ "${DRUPALSET}" = "drupal11" ]; then
 #DRUPALSET=Drupal11の設定値（特定のバージョン11.0.5）
 drupalver=:11.0.5
 phpver=8.3
 dbver=mysql:8.0
 
-elif [ ${DRUPALSET} = "drupal10" ]; then
+elif [ "${DRUPALSET}" = "drupal10" ]; then
 #RUPALSET=Drupal10の設定値（特定のバージョン10.3.6）
 drupalver=:10.3.6
 phpver=8.1
@@ -32,8 +32,8 @@ adminpass=admin
 XDEBUGFLG=true
 
 profile=lando
-backupfile=20241027_041002_chatgpt100.tar.gz
-backupdb=20241027_041002_chatgpt100.sql
+backupfile=20241029_041002_chatgpt100.tar.gz
+backupdb=20241029_041002_chatgpt100.sql
 
 
 
