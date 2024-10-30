@@ -33,35 +33,35 @@ webpath=${projpath}/web
 vendorpath=${projpath}/vendor
 
 if [ -d ./${projpath} ]; then
-  echo "既にフォルダが存在します。";
-  echo "処理を中断します。";
+  echo "${RED}【警告】既にフォルダが存在します。${RESET}";
+  echo "${RED}処理を中断します${RESET}";
   exit 1;
 fi
 if [ -f ./${backupfile} ]; then
-  echo "【passed】インポート対象ファイル ${backupfile} が見つかりました。";
+  echo "${GREEN}【passed】インポート対象ファイル ${backupfile} が見つかりました${RESET}";
 else
-  echo "インポート対象ファイル ${backupfile} が存在しません。";
+  echo "${RED}インポート対象ファイル ${backupfile} が存在しません。${RESET}";
   echo "処理を中断します。";
   exit 1;
 fi
 if [ -f ./${backupdb} ]; then
-  echo "【passed】インポート対象DBファイル ${backupdb} が見つかりました。";
+  echo "${GREEN}【passed】インポート対象DBファイル ${backupdb} が見つかりました${RESET}";
 else
-  echo "インポート対象DBファイル ${backupdb} が存在しません。";
-  echo "処理を中断します。";
+  echo "${RED}インポート対象DBファイル ${backupdb} が存在しません${RESET}";
+  echo "${RED}処理を中断します${RESET}";
   exit 1;
 fi
 
-echo "【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行"
+echo "${GREEN}【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 
 
-echo 設定ファイルのバックアップを取る
+echo "${GREEN}設定ファイルのバックアップします${RESET}"
 ls ${webpath}/sites/default/settings.php 
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
-echo ファイルを展開する
+echo "${GREEN}ファイルを展開します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 tar zxf ./${backupfile}
 echo VENDER,WEBフォルダ、COMPOSERファイルをBAKフォルダに移動する
@@ -78,14 +78,14 @@ mv -f ./chatgpt100/web ${projpath}
 mv -f ./chatgpt100/vendor ${projpath}
 cp -f ./chatgpt100/composer.* ${projpath}
 
-echo 退避済みの設定ファイルを元に場所に戻す
+echo "退避済みの設定ファイルを元に場所に戻す"
 cp -f ${projpath}/settings.php ${webpath}/sites/default/ 
 echo 所有者、権限を変更する
 sudo chmod 777 ${webpath} -R
 sudo chmod 777 ${vendorpath} -R
 
-echo データベースをリストアする
+echo "${GREEN}データベースをリストアします${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 lando db-import ./${backupdb}
 
-echo "アプリのインストールを完了しました"
+echo "${GREEN}アプリのインストールを完了しました${RESET}"
