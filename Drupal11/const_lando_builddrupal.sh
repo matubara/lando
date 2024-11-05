@@ -12,6 +12,12 @@ drupalver=:11.0.5
 phpver=8.3
 dbver=mysql:8.0
 
+elif [ "${DRUPALSET}" = "drupal10+" ]; then
+#RUPALSET=Drupal10の設定値（特定のバージョン10.3.6）
+drupalver=:10.3.6
+phpver=8.3
+dbver=mysql:8.0
+
 elif [ "${DRUPALSET}" = "drupal10" ]; then
 #RUPALSET=Drupal10の設定値（特定のバージョン10.3.6）
 drupalver=:10.3.6
