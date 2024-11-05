@@ -1,30 +1,8 @@
 #!/usr/bin/bash
 ######################################################
-# DRUPALSET: mkdrupal11xdbg.shの第二引数に引き渡す定数
-
-if [ $# -eq 0 ];then
-    #プロンプトをechoを使って表示
-    echo -n foldername=
-    read name
-    #デフォルト値設定
-    DRUPALSET=drupal10
-elif [ $# -eq 1 ]; then
-    name=$1
-    #デフォルト値設定
-    DRUPALSET=drupal10
-elif [ $# -eq 2 ] && [ $2 = "drupal10+" ]; then
-    name=$1
-    DRUPALSET=$2
-elif [ $# -eq 2 ] && [ $2 = "drupal10" ]; then
-    name=$1
-    DRUPALSET=$2
-elif [ $# -eq 2 ] && [ $2 = "drupal11" ]; then
-    name=$1
-    DRUPALSET=$2
-else
-    echo "引数が不正です"
-    exit 1
-fi
+# パラメータを変数に取り込む 
+source ./getparameters.sh
+######################################################
 
 if [ -d ./${name} ]; then
   echo "【警告】既にフォルダが存在します。";
