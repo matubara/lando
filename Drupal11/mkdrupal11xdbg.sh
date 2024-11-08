@@ -13,7 +13,8 @@ source ./const_lando_builddrupal.sh
 ######################################################
 if "${STEPMODE}"; then
     echo "【確認】設定内容を確認してください"
-    echo "フォルダ名: ${name}"
+    echo "現在のDrupal Project フォルダ名: ${drupalproj}"
+    echo "バックアップファイル（転送元）のDrupal Project フォルダ名: ${drupalproj_old}"
     echo "Drupalバージョン: ${DRUPALSET}"
     read -p "よろしければ(y)、中断する場合は(N)を押してください (y/N): " yn
     case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
@@ -33,7 +34,7 @@ XDEBUGFLG=true
 
 
 
-if [ -d ./${name} ]; then
+if [ -d ./${drupalproj} ]; then
   echo "既にフォルダが存在します。";
   echo "処理を中断します。";
   exit 1;
@@ -43,11 +44,11 @@ echo "現在起動中のコンテナをすべて停止する"
 docker stop $(docker ps -q)
 
 
-echo "${GREEN}${name} ディレクトリを作成します${RESET}";
+echo "${GREEN}${drupalproj} ディレクトリを作成します${RESET}";
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 # Create folder and enter it
-mkdir ${name} && cd ${name}
+mkdir ${drupalproj} && cd ${drupalproj}
 
 pwd
 echo "${GREEN}lando 設定ファイルを作成します${RESET}"
@@ -63,7 +64,7 @@ cp -rf ../lando_conf ./.lando_conf
     --source cwd \
     --recipe ${recipe} \
     --webroot ${webroot} \
-    --name ${name} 
+    --name ${drupalproj} 
 
 
 # Add xdebug service to .lando.yml

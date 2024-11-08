@@ -1,5 +1,6 @@
 #ステップ実行モード
 STEPMODE=false
+#STEPMODE=true
 #アプリインストール
 APPINSTALL=true
 

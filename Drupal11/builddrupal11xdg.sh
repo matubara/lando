@@ -4,7 +4,7 @@
 source ./getparameters.sh
 ######################################################
 
-if [ -d ./${name} ]; then
+if [ -d ./${drupalproj} ]; then
   echo "【警告】既にフォルダが存在します。";
   echo "処理を中断します";
   exit 1;
@@ -12,8 +12,9 @@ fi
 
 ######################################################
     echo "【確認】設定内容を確認してください"
-    echo "フォルダ名: ${name}"
-    echo "Drupalバージョン: ${DRUPALSET}" 
+    echo "現在のDrupal Project フォルダ名: ${drupalproj}"
+    echo "バックアップファイル（転送元）のDrupal Project フォルダ名: ${drupalproj_old}"
+    echo "Drupalバージョン: ${DRUPALSET}"
     read -p "よろしければ(y)、中断する場合は(N)を押してください (y/N): " yn
     case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
 ######################################################
@@ -40,7 +41,8 @@ case "${yesno}" in
 esac
 fi
 
-bash ./mkdrupal11xdbg.sh ${name} ${DRUPALSET}
+# Drupal環境構築用スクリプトを実行します
+bash ./mkdrupal11xdbg.sh ${drupalproj} ${drupalproj_old} ${DRUPALSET}
 
 
 echo "${YELLOW}デバッグモードを有効にします${RESET}"
@@ -56,7 +58,7 @@ case "${yesno}" in
 esac
 fi
 
-bash ./add-drupal11-devmode.sh ${name}
+bash ./add-drupal11-devmode.sh ${drupalproj}
 
 
 echo "${YELLOW}コントリビュートモジュールをインストールします${RESET}"
@@ -72,7 +74,7 @@ case "${yesno}" in
 esac
 fi
 
-bash ./install-drupal11-modules-via-composer.sh ${name}
+bash ./install-drupal11-modules-via-composer.sh ${drupalproj}
 
 
 echo "${YELLOW}コントリビュートモジュールを有効化します${RESET}"
@@ -87,7 +89,7 @@ case "${yesno}" in
 esac
 fi
 
-bash ./activate-drupal11-modules.sh ${name}
+bash ./activate-drupal11-modules.sh ${drupalproj}
 
 
 if "${APPINSTALL}"; then
@@ -103,10 +105,10 @@ echo "${YELLOW}アプリをインストールします${RESET}"
 	esac
 	fi
 	#アプリ実行用フォルダをDrupalプロジェクトフォルダに作成する
-	cp ./restore_work ./${name} -rf
-	cd ./${name}/restore_work 
+	cp ./restore_work ./${drupalproj} -rf
+	cd ./${drupalproj}/restore_work 
 	#アプリインストールスクリプトを実行する
-	./lando_restore_drupal.sh ${name} 
+	./lando_restore_drupal.sh ${drupalproj} ${drupalproj_old}
 fi
 
 lando info
