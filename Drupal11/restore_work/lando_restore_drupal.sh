@@ -3,48 +3,65 @@ source ../../const_lando_builddrupal.sh
 
 if [ $# -eq 0 ];then
     #プロンプトをechoを使って表示
-    echo -n foldername=
-    #入力を受付、その入力を「str」に代入
-    read name
-    echo "フォルダ名は ${name} でよろしいですか？"
-    read -p "ok? (y/N): " yn
-    case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
+    echo -n "New Drupal project name ="
+    #入力を受付、その入力を「drupalproj」に代入
+    read drupalproj
+    #プロンプトをechoを使って表示
+    echo -n "Old Drupal project name ="
+    #入力を受付、その入力を「drupalproj_old」に代入
+    read drupalproj_old
+    echo "Drupal project名は次の通りです"
+    echo "現在のDrupal project名： ${drupalproj} "
+    echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
+    if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
-elif [ $# -eq 1 ]; then
-    name=$1
-    echo "フォルダ名は ${name} です"
-    if "${STEPMODE}"; then
-      read -p "ok? (y/N): " yn
-      case "$yn" in [yY]*) ;; *) echo "abort." ; exit ;; esac
-    fi
+elif [ $# -eq 2 ]; then
+    drupalproj=$1
+    drupalproj_old=$2
+    echo "Drupal project名は次の通りです"
+    echo "現在のDrupal project名： ${drupalproj} "
+    echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
+    if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
+
 else
-    echo "引数が不正です"
+    echo "${RED}【警告】引数が不正です${RESET}";
+    echo "${RED}第一引数：現在のDrupal project名${RESET}";
+    echo "${RED}第二引数：転送元（バックアップファイル内）のDrupal project名${RESET}";
+    echo "${RED}処理を中断します${RESET}";
     exit 1
 fi
 
-#変数の定義
+
 #Drupalプロジェクトフォルダ名
-drupalproj=${name}
+#getparameters.shから取得したフォルダ名を使用する
+#VPSと共用版を作成する場合は要検討
+#drupalproj=${name}
+
+#バックアップファイル内の転送元Drupalプロジェクトフォルダ名
+#drupalproj_old=chatgpt100
+
 #Drupalプロジェクトパス
 projpath=/home/matsubara/${profile}/${drupalproj}
+#Drupalプロジェクト内ワークパス
+workpath=/home/matsubara/${profile}/${drupalproj}/restore_work
 #WEBパス
 webpath=${projpath}/web
 #VENDORパス
 vendorpath=${projpath}/vendor
 
-if [ -d ./${projpath} ]; then
-  echo "${RED}【警告】既にフォルダが存在します。${RESET}";
+if [ ! -d ${projpath} ]; then
+  echo "${RED}【警告】Drupal projectフォルダが存在しません${RESET}";
   echo "${RED}処理を中断します${RESET}";
   exit 1;
 fi
-if [ -f ./${backupfile} ]; then
+if [ -f ${workpath}/${backupfile} ]; then
   echo "${GREEN}【passed】インポート対象ファイル ${backupfile} が見つかりました${RESET}";
 else
   echo "${RED}インポート対象ファイル ${backupfile} が存在しません。${RESET}";
   echo "処理を中断します。";
   exit 1;
 fi
-if [ -f ./${backupdb} ]; then
+if [ -f ${workpath}/${backupdb} ]; then
   echo "${GREEN}【passed】インポート対象DBファイル ${backupdb} が見つかりました${RESET}";
 else
   echo "${RED}インポート対象DBファイル ${backupdb} が存在しません${RESET}";
@@ -63,7 +80,18 @@ if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
 echo "${GREEN}ファイルを展開します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-tar zxf ./${backupfile}
+tar zxf ${workpath}/${backupfile}
+
+if [ ! -d ${workpath}/${drupalproj_old} ]; then
+  echo "${RED}【警告】バックアップファイル（転送元）に対象のDrupal Projectフォルダが存在しません${RESET}";
+  echo "${RED}処理を中断します${RESET}";
+  exit 1;
+fi
+
+echo "バックアップファイル（転送元）内の設定ファイルを削除する"
+sudo rm -f ${workpath}/${drupalproj_old}/web/sites/default/settings.php
+
+
 echo VENDER,WEBフォルダ、COMPOSERファイルをBAKフォルダに移動する
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 sudo rm -rf ${projpath}/bak
@@ -72,20 +100,23 @@ sudo mv  ${webpath} ${projpath}/bak
 sudo mv  ${vendorpath} ${projpath}/bak
 sudo mv  ${projpath}/composer.json ${projpath}/bak
 sudo mv  ${projpath}/composer.lock ${projpath}/bak
+
 echo バックアップファイルのWEB,VENDERフォルダとCOMPSER.*ファイルを元に場所にコピーする
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-mv -f ./chatgpt100/web ${projpath}
-mv -f ./chatgpt100/vendor ${projpath}
-cp -f ./chatgpt100/composer.* ${projpath}
+sudo mv -f ${workpath}/${drupalproj_old}/web ${projpath}
+sudo mv -f ${workpath}/${drupalproj_old}/vendor ${projpath}
+sudo cp -f ${workpath}/${drupalproj_old}/composer.* ${projpath}
 
 echo "退避済みの設定ファイルを元に場所に戻す"
-cp -f ${projpath}/settings.php ${webpath}/sites/default/ 
+sudo cp -f ${projpath}/settings.php ${webpath}/sites/default/ 
 echo 所有者、権限を変更する
 sudo chmod 777 ${webpath} -R
 sudo chmod 777 ${vendorpath} -R
 
 echo "${GREEN}データベースをリストアします${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-lando db-import ./${backupdb}
+#次のいずれかの方法でデータベースのインポートが可能
+lando db-import ${backupdb}
+#lando mysql -u drupal10 -pdrupal10 -h database drupal10 < ${workpath}/${backupdb}
 
 echo "${GREEN}アプリのインストールを完了しました${RESET}"
