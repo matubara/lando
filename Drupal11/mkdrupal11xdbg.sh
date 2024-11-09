@@ -58,6 +58,26 @@ if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 rm -rf ./.lando_conf
 cp -rf ../lando_conf ./.lando_conf
 
+rm -f ./php.ini
+
+ echo "[PHP]" >> ./php.ini
+ echo "" >> ./php.ini
+ echo "; Xdebug" >> ./php.ini
+ echo "xdebug.max_nesting_level = 256" >> ./php.ini
+ echo "xdebug.show_exception_trace = 0" >> ./php.ini
+ echo "xdebug.collect_params = 0" >> ./php.ini
+ echo "xdebug.mode = debug" >> ./php.ini
+ echo "xdebug.client_port = 9001" >> ./php.ini
+ echo "xdebug.start_with_request = yes" >> ./php.ini
+ echo "xdebug.client_host = ${LANDO_HOST_IP}" >> ./php.ini
+ echo "xdebug.idekey = \"PHPSTORM\"" >> ./php.ini
+ echo "; xdebug.log = /tmp/xdebug.log" >> ./php.ini
+ echo "" >> ./php.ini
+ echo "; xdebug.remote_connect_back = 1" >> ./php.ini
+ echo "; xdebug.remote_log = /tmp/xdebug_remote.log" >> ./php.ini
+
+
+
 # Initialize a drupal9 recipe
 
   lando init \
@@ -69,7 +89,7 @@ cp -rf ../lando_conf ./.lando_conf
 
 # Add xdebug service to .lando.yml
 echo "Add xdebug service to .lando.yml"
-sed -i "/webroot:/a \  xdebug: ${XDEBUGFLG}\n  php: ${phpver}\n  database: ${dbver}\n  config:\n    php: .lando_conf/php.ini" .lando.yml
+sed -i "/webroot:/a \  xdebug: ${XDEBUGFLG}\n  php: ${phpver}\n  database: ${dbver}\n  config:\n    php: ./php.ini" .lando.yml
 
 
 echo "Add phpAdmin service"
