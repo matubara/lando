@@ -34,7 +34,15 @@ elif [ $# -eq 3 ] && [ $3 = "drupal11" ]; then
     drupalproj_old=$2
     DRUPALSET=$3
 else
-    echo "引数が不正です"
+    echo "【警告】引数が不正です"
+    echo "第一引数：現在のDrupalProject名"
+    echo "第二引数：バックアップファイル（転送元）のDrupalProject名"
+    echo "第三引数：Drupal設定パターン設定用のID（詳細は以下参照）"
+    echo "【Drupal設定パターン設定ID】"
+    echo "drupal10 => php8.1, mySQL5.7, Drupal10.3.6"
+    echo "drupal10+ => php8.1, mySQL5.7, Drupal10.3.6"
+    echo "drupal11 => php8.3, mySQL8.0, Drupal11.0.5"
+    echo "※ 第三引数は上記のいずれかを設定してください"
     exit 1
 fi
 
