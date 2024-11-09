@@ -1,32 +1,21 @@
 
 source ../../const_lando_builddrupal.sh 
 
-if [ $# -eq 0 ];then
-    #プロンプトをechoを使って表示
-    echo -n "New Drupal project name ="
-    #入力を受付、その入力を「drupalproj」に代入
-    read drupalproj
-    #プロンプトをechoを使って表示
-    echo -n "Old Drupal project name ="
-    #入力を受付、その入力を「drupalproj_old」に代入
-    read drupalproj_old
-    echo "Drupal project名は次の通りです"
-    echo "現在のDrupal project名： ${drupalproj} "
-    echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
-    if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-
-elif [ $# -eq 2 ]; then
+if [ $# -eq 3 ]; then
     drupalproj=$1
     drupalproj_old=$2
+    backupname=$3
     echo "Drupal project名は次の通りです"
     echo "現在のDrupal project名： ${drupalproj} "
     echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
+    echo "バックアップファイル名：${backupname}"
     if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
 else
     echo "${RED}【警告】引数が不正です${RESET}";
     echo "${RED}第一引数：現在のDrupal project名${RESET}";
     echo "${RED}第二引数：転送元（バックアップファイル内）のDrupal project名${RESET}";
+    echo "${RED}第三引数：バックアップファイル名${RESET}";
     echo "${RED}処理を中断します${RESET}";
     exit 1
 fi
@@ -48,6 +37,9 @@ workpath=/home/matsubara/${profile}/${drupalproj}/restore_work
 webpath=${projpath}/web
 #VENDORパス
 vendorpath=${projpath}/vendor
+
+backupfile=${backupname}.tar.gz
+backupdb=${backupname}.sql
 
 if [ ! -d ${projpath} ]; then
   echo "${RED}【警告】Drupal projectフォルダが存在しません${RESET}";
@@ -72,12 +64,12 @@ fi
 echo "${GREEN}【Drupal】環境構築 KUSANAGI環境 初期化コマンド実行します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 
+if [ -f ${webpath}/sites/default/settings.php ]; then
+  echo "${GREEN}設定ファイルのバックアップします${RESET}"
+  if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
+  sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
+fi
 
-
-echo "${GREEN}設定ファイルのバックアップします${RESET}"
-ls ${webpath}/sites/default/settings.php 
-if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
-sudo mv -f ${webpath}/sites/default/settings.php ${projpath} 
 echo "${GREEN}ファイルを展開します${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 tar zxf ${workpath}/${backupfile}
