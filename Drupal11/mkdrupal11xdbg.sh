@@ -35,10 +35,13 @@ XDEBUGFLG=true
 
 
 if [ -d ./${drupalproj} ]; then
-  echo "既にフォルダが存在します。";
-  echo "処理を中断します。";
+  echo "${RED}既にフォルダが存在します。${RESET}";
+  echo "${RED}処理を中断します。${RESET}";
   exit 1;
 fi
+
+echo "${YELLOW}${drupalproj} SUDO権限で実行するためパスワードを入力してください${RESET}";
+sudo ls
 
 echo "現在起動中のコンテナをすべて停止する"
 docker stop $(docker ps -q)
