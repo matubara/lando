@@ -5,44 +5,59 @@
 # ※ DRUPALSETの値により読み込まれる定数の内容が変わる
 ###############################################################
 
-if [ $# -eq 0 ];then
-    #プロンプトをechoを使って表示
-    echo -n "現在の Drupal project名="
-    #入力を受付、その入力を「drupalproj」に代入
-    read drupalproj
-    #プロンプトをechoを使って表示
-    echo -n "転送元（バックアップファイル内）のDrupal project名="
-    #入力を受付、その入力を「drupalproj_old」に代入
-    read drupalproj_old
-    echo "Drupal project名は次の通りです"
-    echo "現在のDrupal project名： ${drupalproj} "
-    echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
-    read -p ${CONFIRMMES}
-
-    #デフォルト値設定
-    DRUPALSET=drupal10
-elif [ $# -eq 3 ] && [ $3 = "drupal10+" ]; then
+#readonly APPINSTALL=false
+DRUPALSET=UNDEFINED
+if [ $# -eq 2 ]; then
     drupalproj=$1
-    drupalproj_old=$2
-    DRUPALSET=$3
-elif [ $# -eq 3 ] && [ $3 = "drupal10" ]; then
+    DRUPALSET=$2
+    #アプリインストールしない
+    readonly APPINSTALL=false
+elif [ $# -eq 4 ]; then
     drupalproj=$1
-    drupalproj_old=$2
-    DRUPALSET=$3
-elif [ $# -eq 3 ] && [ $3 = "drupal11" ]; then
-    drupalproj=$1
-    drupalproj_old=$2
-    DRUPALSET=$3
+    DRUPALSET=$2
+    drupalproj_old=$3
+    backupname=$4
+    #アプリインストールする
+    readonly APPINSTALL=true
 else
     echo "【警告】引数が不正です"
     echo "第一引数：現在のDrupalProject名"
-    echo "第二引数：バックアップファイル（転送元）のDrupalProject名"
-    echo "第三引数：Drupal設定パターン設定用のID（詳細は以下参照）"
+    echo "第二引数：Drupal設定パターン設定用のID（詳細は以下参照）"
+    echo "※ オプショナル 第三引数：バックアップファイル（転送元）のDrupalProject名"
+    echo "※ オプショナル 第四引数：バックアップファイル名"
     echo "【Drupal設定パターン設定ID】"
     echo "drupal10 => php8.1, mySQL5.7, Drupal10.3.6"
-    echo "drupal10+ => php8.1, mySQL5.7, Drupal10.3.6"
+    echo "drupal10+ => php8.3, mySQL8.0, Drupal10.3.6"
     echo "drupal11 => php8.3, mySQL8.0, Drupal11.0.5"
     echo "※ 第三引数は上記のいずれかを設定してください"
     exit 1
+fi
+
+if [ "${DRUPALSET}" = "drupal10" ]; then
+    echo "【pass】Drupal設定パターン = ${DRUPALSET}"
+    echo "drupal10 => php8.1, mySQL5.7, Drupal10.3.6"
+elif [ "${DRUPALSET}" = "drupal10+" ]; then
+    echo "【pass】Drupal設定パターン = ${DRUPALSET}"
+    echo "drupal10+ => php8.3, mySQL8.0, Drupal10.3.6"
+elif [ "${DRUPALSET}" = "drupal11" ]; then
+    echo "【pass】Drupal設定パターン = ${DRUPALSET}"
+    echo "drupal11 => php8.3, mySQL8.0, Drupal11.0.5"
+else
+    echo "【警告】入力されたDrupal設定パターンが不正です"
+    echo "【pass】Drupal設定パターン ≠= ${DRUPALSET}"
+    echo "中断します"
+    exit 1    
+fi
+
+echo "【確認】設定情報は次の通りです"
+echo "現在のDrupal project名： ${drupalproj} "
+echo "Drupal pattern id： ${DRUPALSET} "
+if "${APPINSTALL}"; then
+    echo "アプリインストール：する"
+    echo "転送元（バックアップファイル内）のDrupal project名： ${drupalproj_old} "
+    echo "リストア対象ファイル：${backupname}.tar.gz"
+    echo "リストア対象データベース：${backupname}.sql"
+else
+    echo "アプリインストール：しない"
 fi
 

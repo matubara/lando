@@ -2,7 +2,8 @@
 STEPMODE=false
 #STEPMODE=true
 #アプリインストール
-APPINSTALL=true
+#引数の設定数により自動設定
+#APPINSTALL=true
 
 ################################################################
 #DRUPALSET: mkdrupal11xdbg.shの第二引数(左記以外では使用されない)
@@ -39,8 +40,6 @@ adminpass=admin
 XDEBUGFLG=true
 
 profile=lando
-backupfile=20241029_041002_chatgpt100.tar.gz
-backupdb=20241029_041002_chatgpt100.sql
 
 
 

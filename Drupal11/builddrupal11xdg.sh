@@ -42,7 +42,7 @@ esac
 fi
 
 # Drupal環境構築用スクリプトを実行します
-bash ./mkdrupal11xdbg.sh ${drupalproj} ${drupalproj_old} ${DRUPALSET}
+bash ./mkdrupal11xdbg.sh ${drupalproj} ${DRUPALSET} ${drupalproj_old} ${backupname}
 
 
 echo "${YELLOW}デバッグモードを有効にします${RESET}"
@@ -108,7 +108,7 @@ echo "${YELLOW}アプリをインストールします${RESET}"
 	cp ./restore_work ./${drupalproj} -rf
 	cd ./${drupalproj}/restore_work 
 	#アプリインストールスクリプトを実行する
-	./lando_restore_drupal.sh ${drupalproj} ${drupalproj_old}
+	./lando_restore_drupal.sh ${drupalproj} ${drupalproj_old} ${backupname}
 fi
 
 lando info
