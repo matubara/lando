@@ -4,6 +4,7 @@ STEPMODE=false
 #アプリインストール
 #引数の設定数により自動設定
 #APPINSTALL=true
+APPINSTALL=false
 
 ################################################################
 #DRUPALSET: mkdrupal11xdbg.shの第二引数(左記以外では使用されない)
