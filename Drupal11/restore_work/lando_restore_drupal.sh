@@ -108,7 +108,7 @@ sudo chmod 777 ${vendorpath} -R
 echo "${GREEN}データベースをリストアします${RESET}"
 if "${STEPMODE}"; then read -p ${CONFIRMMES}; fi
 #次のいずれかの方法でデータベースのインポートが可能
-lando db-import ${backupdb}
+lando db-import ${backupdb} --no-wipe
 #lando mysql -u drupal10 -pdrupal10 -h database drupal10 < ${workpath}/${backupdb}
 
 echo "${GREEN}アプリのインストールを完了しました${RESET}"
